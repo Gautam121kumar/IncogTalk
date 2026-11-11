@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#2457c5">
+  <meta name="description" content="IncogTalk helps you hide private messages inside images, audio and video.">
+  <title>IncogTalk | Private messages, hidden in media</title>
+  <link rel="icon" type="image/svg+xml" href="assets/incogtalk-mark.svg">
+   <link rel="stylesheet" href="css/style.css">
+  <script src="js/encode.js" defer></script>
+  <script src="js/decode.js" defer></script>
+  <script src="js/crypto.js" defer></script>
+  <script src="js/app.js" defer></script>
+</head>
+<body>
+  <nav class="navbar">
+    <a class="brand" href="#home" data-page="home" aria-label="IncogTalk home"><span class="brand-mark"><svg class="incogtalk-logo" viewBox="0 0 48 48" role="img" aria-label="IncogTalk logo" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="itg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3974e8"/><stop offset="1" stop-color="#173f9f"/></linearGradient></defs><path d="M9 7.5h30a4.5 4.5 0 0 1 4.5 4.5v20a4.5 4.5 0 0 1-4.5 4.5H22l-10.5 7v-7H9A4.5 4.5 0 0 1 4.5 32V12A4.5 4.5 0 0 1 9 7.5Z" fill="url(#itg)"/><path d="M14 18h5v5h-5zm8 0h5v5h-5zm8 0h5v5h-5zM14 26h5v5h-5zm8 0h5v5h-5z" fill="#fff"/><path d="M30 26h5v5h-5z" fill="#a9cbff"/></svg></span><span>Incog<span class="brand-accent">Talk</span></span></a>
+    <div class="nav-links">
+      <button class="nav-link active" data-page="home">Home</button>
+      <a class="nav-link" href="#about">How it works</a>
+    </div>
+  </nav>
+
+  <main>
+    <section class="hero page" id="home">
+      <div class="hero-content">
+        <div class="eyebrow"><span class="eyebrow-dot"></span> YOUR PICTURE STAYS ON YOUR DEVICE</div>
+        <h1>Keep a message<br>inside a <span>picture.</span></h1>
+        <p class="hero-copy">Put a private message inside a picture. Share the picture and your passkey with someone you trust. No account needed.</p>
+        <div class="hero-actions">
+          <button class="btn btn-primary" data-page="hide"> <span>↗</span> Put a message in a picture</button>
+          <button class="btn btn-secondary" data-page="reveal">Read a hidden message</button>
+        </div>
+        <div class="trust-row"><span>✓ Passkey protection</span><span>✓ Hidden picture message</span><span>✓ No account needed</span></div>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <div class="art-glow"></div><div class="art-card art-card-back"><span>•••</span><div class="art-lines"></div></div>
+        <div class="art-card art-card-front"><div class="art-lock">⌑</div><div class="art-pixels"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="art-caption">A secret in plain sight</div></div>
+      </div>
+    </section>
+
+    <section class="page tool-page" id="hide" hidden>
+      <div class="tool-heading"><button class="back-button" type="button" data-page="home">← Back to Home</button><div class="eyebrow">FOR THE PERSON SENDING</div><h1>Put a message in a picture</h1><p>Write your message, choose one picture, and make a passkey.</p></div>
+      <div class="tool-layout">
+        <div class="tool-card">
+          <div class="step-heading"><span class="step-number">01</span><div><h2>Your message</h2><p>Your friend will need the passkey to read it.</p></div></div>
+          <label for="secretMessage">Message</label>
+          <textarea id="secretMessage" rows="5" maxlength="10000" placeholder="Write your secret message here..."></textarea>
+          <div class="field-meta"><span>Keep it private</span><span id="charCount">0 / 10,000</span></div>
+
+          <div class="step-heading step-gap"><span class="step-number">02</span><div><h2>Choose one picture</h2><p>Choose one PNG picture. Your finished picture will also be a PNG.</p></div></div>
+          <label class="upload-zone" for="imageUpload" id="coverDropZone"><span class="upload-icon">↑</span><strong>Choose one PNG picture</strong><span>Click to choose or drag a PNG here · PNG only</span><input type="file" id="imageUpload" accept="image/png,.png"></label>
+          <div class="image-preview" id="coverPreview" hidden><img id="coverPreviewImage" alt="Selected cover image preview"><div class="preview-info"><strong id="coverFileName"></strong><span id="coverDimensions"></span></div><button class="text-button" id="clearCover" type="button">Remove</button></div>
+
+          <div class="step-heading step-gap"><span class="step-number">03</span><div><h2>Make a passkey</h2><p>Your friend will need this same passkey.</p></div></div>
+          <label for="senderPassword">Passkey</label>
+          <div class="password-wrap"><input type="password" id="senderPassword" autocomplete="new-password" placeholder="Any passkey you can remember"><button type="button" class="password-toggle" data-toggle="senderPassword">Show</button></div>
+          <p class="hint">You can use a short passkey like 123. A longer passkey is harder for others to guess. We cannot recover it if you forget it.</p>
+          <div class="capacity-row"><span>How much can this picture hold?</span><strong id="capacityText">Choose an image to check</strong></div>
+          <button class="btn btn-primary full-btn" id="generateButton" type="button">Make my secret picture <span>→</span></button>
+          <div class="status" id="encodeStatus" role="status" aria-live="polite" hidden></div>
+        </div>
+        <aside class="side-note"><div class="side-icon">✦</div><h3>How your message is protected</h3><p>First, we lock your message with your passkey. Then we hide it inside the picture.</p><ul><li>Message lock</li><li>Passkey protection</li><li>Hidden picture data</li></ul><p class="small-note">Use the downloaded PNG as-is. Messaging apps that resize or recompress images may destroy the hidden data.</p></aside>
+      </div>
+      <section class="result-card" id="encodeResult" hidden>
+        <div class="result-icon">✓</div><div class="result-copy"><h2>Your secret image is ready</h2><p>Download the PNG and send it to your recipient. Share the passkey through a separate channel.</p></div>
+        <img id="encodedPreview" alt="Preview of encoded PNG">
+        <div class="result-actions"><a class="btn btn-primary" id="downloadLink" download="incogtalk-secret.png">Download secret PNG ↓</a><button class="btn btn-secondary" id="copySenderPasskey" type="button">Copy passkey</button></div>
+        <p class="hint">The passkey is not embedded in the image. Keep it safe and share it separately.</p>
+      </section>
+    </section>
+
+    <section class="page tool-page" id="reveal" hidden>
+      <div class="tool-heading"><button class="back-button" type="button" data-page="home">← Back to Home</button><div class="eyebrow">FOR THE PERSON READING</div><h1>Read a hidden message</h1><p>Choose the picture your friend sent you and enter their passkey.</p></div>
+      <div class="tool-layout reveal-layout">
+        <div class="tool-card">
+          <div class="step-heading"><span class="step-number">01</span><div><h2>Choose the secret picture</h2><p>Choose the PNG picture your friend sent.</p></div></div>
+          <label class="upload-zone" for="encodedImage" id="secretDropZone"><span class="upload-icon">↑</span><strong>Choose one secret picture</strong><span>Click to choose or drag a PNG here · PNG only</span><input type="file" id="encodedImage" accept="image/png,.png"></label>
+          <div class="image-preview" id="secretPreview" hidden><img id="secretPreviewImage" alt="Selected secret image preview"><div class="preview-info"><strong id="secretFileName"></strong><span id="secretDimensions"></span></div><button class="text-button" id="clearSecret" type="button">Remove</button></div>
+          <div class="step-heading step-gap"><span class="step-number">02</span><div><h2>Type the passkey</h2><p>Use the same passkey your friend gave you.</p></div></div>
+          <label for="receiverPassword">Passkey</label>
+          <div class="password-wrap"><input type="password" id="receiverPassword" autocomplete="current-password" placeholder="Type the passkey you received"><button type="button" class="password-toggle" data-toggle="receiverPassword">Show</button></div>
+          <button class="btn btn-primary full-btn" id="revealButton" type="button">Show me the message <span>→</span></button>
+          <div class="status" id="decodeStatus" role="status" aria-live="polite" hidden></div>
+        </div>
+        <aside class="side-note"><div class="side-icon">⌁</div><h3>What will happen?</h3><p>IncogTalk looks inside the picture and uses your passkey to unlock the message.</p><ul><li>Use the original PNG picture</li><li>You need the passkey</li><li>A wrong passkey will not open the message</li></ul><p class="small-note">If the image was compressed, edited or resized, the hidden payload may no longer be recoverable.</p></aside>
+      </div>
+      <section class="result-card recovered-card" id="decodeResult" hidden>
+        <div class="result-icon">✓</div><div class="result-copy"><h2>Your message is ready</h2><p>Here is the message your friend sent.</p></div>
+        <label for="recoveredMessage">Your friend's message</label><textarea id="recoveredMessage" rows="6" readonly></textarea>
+        <button class="btn btn-secondary" id="copyMessage" type="button">Copy recovered message</button>
+      </section>
+    </section>
+
+    <section class="about" id="about">
+      <div class="eyebrow">HOW IT WORKS</div><h2>A message hidden inside a picture.</h2>
+      <div class="about-grid">
+        <article><span>01</span><h3>Lock it</h3><p>Your passkey locks the message so others cannot read it.</p></article>
+        <article><span>02</span><h3>Hide it</h3><p>The message is hidden inside the picture.</p></article>
+        <article><span>03</span><h3>Open it</h3><p>Your friend uses the picture and passkey to read the message.</p></article>
+      </div>
+      <p class="privacy-footnote">Your message, picture and passkey are handled on your device. This website does not upload or store them. This is an educational project; it has not undergone an independent security audit.</p>
+    </section>
+  </main>
+  <footer><a class="brand" href="#home" data-page="home" aria-label="IncogTalk home"><span class="brand-mark"><svg class="incogtalk-logo" viewBox="0 0 48 48" role="img" aria-label="IncogTalk logo" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="itg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3974e8"/><stop offset="1" stop-color="#173f9f"/></linearGradient></defs><path d="M9 7.5h30a4.5 4.5 0 0 1 4.5 4.5v20a4.5 4.5 0 0 1-4.5 4.5H22l-10.5 7v-7H9A4.5 4.5 0 0 1 4.5 32V12A4.5 4.5 0 0 1 9 7.5Z" fill="url(#itg)"/><path d="M14 18h5v5h-5zm8 0h5v5h-5zm8 0h5v5h-5zM14 26h5v5h-5zm8 0h5v5h-5z" fill="#fff"/><path d="M30 26h5v5h-5z" fill="#a9cbff"/></svg></span><span>Incog<span class="brand-accent">Talk</span></span></a><span>Made for private-by-design messaging.</span></footer>
+</body>
+</html>
